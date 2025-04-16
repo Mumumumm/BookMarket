@@ -5,74 +5,12 @@ import java.util.Scanner;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-//    static Scanner s = new Scanner(System.in) static 을 이용해 전역으로 사용할 수 있게 하기
-//    static String[][] static 을 이용해 전역으로 매개변수 이용
+    //    static Scanner s = new Scanner(System.in) static 을 이용해 전역으로 사용할 수 있게 하기
+    //    static String[][] static 을 이용해 전역으로 매개변수 이용
 
-    public static void menuGuestInfo(String x, String y) {
-        System.out.println("고객 정보 확인하기");
-        System.out.println("현재 고객 정보 :\n" + "이름 :\t" + x + "\t" + "연락처 :\t" + y);
-    }
-
-    public static void menuCartItemList() {
-        System.out.println("장바구니 상품 목록 보기");
-    }
-
-    public static void menuCartClear() {
-        System.out.println("장바구니 비우기");
-    }
-
-    public static void menuCartAddItem(String[][] book) { // 이쪽에서 2차원 배열 매개변수
-        // 지역 Scanner
-        Scanner input = new Scanner(System.in);
-        // 상품 리스트를 출력하기 위한 2중 반복문
-        for (int i = 0; i < book.length; i++) {
-            for (int j = 0; j < book[i].length; j++) {
-                System.out.print(book[i][j] + " | ");
-            }
-            System.out.println(); // 줄바꿈용
-        }
-
-        // 입력값을 받아 조건에 따라 다른 프린트 출력
-        while (true) {
-            System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 : ");
-            String bookId = input.nextLine();
-            boolean flag = false;
-
-            for (int i = 0; i < book.length; i++) { // 도서 ISBN1234 ISBN1235 ISBN1236 을 찾기위한 반복문
-                if (book[i][0].equals(bookId)) { // i번쨰 반복하면서 ISBN1234 ISBN1235 ISBN1236 들은 0열에 있기에 [i][0]
-                    System.out.println("장바구니에 추가하겠습니까? Y | N ");
-                    String cartAdd = input.nextLine(); // 입력값 받기
-                    if (cartAdd.toUpperCase().equals("Y")) {
-                        System.out.println(book[i][0] + " 도서가 장바구니에 추가되었습니다");
-                        flag = true;
-                    } else if (cartAdd.toUpperCase().equals("N")) {
-                        System.out.println(book[i][0] + " 취소되었습니다");
-                        flag = true;
-                    }
-                }
-            }
-            if (flag == true) {
-                break;
-            }else {
-                System.out.println("존재하지 않는 ID입니다");
-                continue;
-            }
-        }
-
-
-    }
-
-    public static void menuCartRemoveItemCount() {
-        System.out.println("장바구니의 항목 수량 줄이기");
-    }
-
-    public static void menuCartRemoveItem() {
-        System.out.println("장바구니의 항목 삭제하기");
-    }
-
-    public static void menuCartBill() {
-        System.out.println("영수증 표시하기");
-    }
+    static String[][] mBook = new String[3][7];
+    static CartItem[] mCart = new CartItem[3]; // 10자리 저장공간 확보 // 배열객체 생성
+    static int mCartItemCount = 0;
 
     public static void main(String[] args) {
         // 선택목록 문자열로 저장하기
@@ -86,7 +24,8 @@ public class Main {
         String str8 = "종료";
 
         // mBook 정보
-        String[][] mBook = new String[3][7];
+
+
         mBook[0][0] = "ISBN1234";
         mBook[0][1] = "쉽게 배우는 JSP 웹 프로그래밍";
         mBook[0][2] = "27000";
@@ -102,6 +41,7 @@ public class Main {
         mBook[1][4] = "실습 단계별 명쾌한 멘토링!";
         mBook[1][5] = "IT전문서";
         mBook[1][6] = "2022/01/22";
+
         mBook[2][0] = "ISBN1236";
         mBook[2][1] = "스크래치";
         mBook[2][2] = "22000";
@@ -126,6 +66,9 @@ public class Main {
         String name = input.nextLine(); // 내용입력 후 엔터
         System.out.print("연락처를 입력하세요 : \t");
         String phone = input.nextLine(); // 내용입력 후 엔터
+        // 스캐너로 입력받은 정보 매개변수로 넘겨주기
+        // Person 객체 생성
+        Person user = new Person(name, phone);
 
         while (true) {
             System.out.println("=======================================================================");
@@ -148,7 +91,7 @@ public class Main {
 
             switch (number) { // 번호 선택 항목 선택별 케이스 출력
                 case 1:
-                    menuGuestInfo(name, phone);
+                    menuGuestInfo(user);
                     break;
                 case 2:
                     menuCartItemList();
@@ -157,7 +100,7 @@ public class Main {
                     menuCartClear();
                     break;
                 case 4:
-                    menuCartAddItem(mBook); // main 에 있는 2차원배열 넣기
+                    menuCartAddItem(); // main 에 있는 2차원배열 넣기
                     break;
                 case 5:
                     menuCartRemoveItemCount();
@@ -179,6 +122,95 @@ public class Main {
 
 
     }
+
+    // Person 객체의 user 매개변수
+    public static void menuGuestInfo(Person user) {
+        System.out.println("고객 정보 확인하기");
+        System.out.println("현재 고객 정보 :\n" + "이름 :\t" + user.getName() + "\t" + "연락처 :\t" + user.getPhone());
+    }
+
+    public static void menuCartItemList() {
+        System.out.println("장바구니 상품 목록 보기");
+    }
+
+    public static void menuCartClear() {
+        System.out.println("장바구니 비우기");
+    }
+
+    public static void menuCartAddItem() {
+
+        // 상품 리스트를 출력하기 위한 2중 반복문
+        for (int i = 0; i < mBook.length; i++) {
+            for (int j = 0; j < mBook[i].length; j++) {
+                System.out.print(mBook[i][j] + " | ");
+            }
+            System.out.println(); // 줄바꿈용
+        }
+
+        // 입력값을 받아 조건에 따라 다른 프린트 출력
+        while (true) {
+            // while 문을 빠져나가기 위한 플래그
+            boolean exit = false;
+            System.out.print("장바구니에 추가할 도서의 ID를 입력하세요 : ");
+
+            Scanner input = new Scanner(System.in);
+            String bookid = input.nextLine();
+
+            int index = -1;
+
+            for (int i = 0; i < mBook.length; i++) {
+                if (bookid.equals(mBook[i][0])) { // 입력값과 id값이 있는 [i][0]를 equals로 비교
+                    index = i; // 여기서 index값을 -1 또는 0~2 결정
+                    break; // 0~2가 나오면 바로 break
+                }
+            }
+
+            if (index != -1) { // index 가 -1 이 아닐때
+                System.out.println("장바구니에 추가하겠습니까? Y | N");
+                String yn = input.nextLine();
+
+                if (yn.toUpperCase().equals("Y")) { // toUpperCase 로 대문자변환 후 yn입력값이 Y라면 실행
+                    if (!isCartInBook(bookid)) { // 해당 도서가 이미 장바구니에 있는지 확인 없을때만 실행
+                        mCart[mCartItemCount] = new CartItem(mBook[index]);
+                        mCartItemCount++;
+                    }
+                    System.out.println(mBook[index][1] + "가 장바구니에 추가되었습니다.");
+                }
+                exit = true;
+            } else { // index가 -1 일때
+                System.out.println("도서가 존재하지 않습니다.");
+            }
+
+            if (exit) {
+                break;
+            }
+
+        }
+
+    }
+
+    public static boolean isCartInBook(String bookId) {
+        for (int i = 0; i < mCartItemCount; i++) {
+            if (bookId.equals(mCart[i].getBook()[0])) { // equals로 id비교하기
+                mCart[i].setCount(mCart[i].getCount()); // 현재 수량의 count 를 1로 지정했으니 + 1
+                return true; // 참이면 리턴
+            }
+        }
+        return false; // 거짓이면 다시for로
+    }
+
+    public static void menuCartRemoveItemCount() {
+        System.out.println("장바구니의 항목 수량 줄이기");
+    }
+
+    public static void menuCartRemoveItem() {
+        System.out.println("장바구니의 항목 삭제하기");
+    }
+
+    public static void menuCartBill() {
+        System.out.println("영수증 표시하기");
+    }
+
 
 }
 

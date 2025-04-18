@@ -117,13 +117,14 @@ public class BookManager {
 
     public void menuCartItemList() {
         System.out.println("장바구니 상품 목록 보기");
-        System.out.println("-------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------\n");
         this.mCart.cartInItemList();
-        System.out.println("-------------------------------------------------------------------");
+        System.out.println("\n-------------------------------------------------------------------");
     }
 
     public void menuCartClear() {
         System.out.println("장바구니 비우기");
+        this.mCart.removeCartItemAll();
     }
 
     public void menuCartAddItem() {
@@ -188,10 +189,22 @@ public class BookManager {
 
     public void menuCartRemoveItemCount() {
         System.out.println("장바구니의 항목 수량 줄이기");
+        BookList book = this.mCart.deCreaseBookCount();
+
+
     }
 
     public void menuCartRemoveItem() {
-        System.out.println("장바구니의 항목 삭제하기");
+        this.mCart.cartInItemList();
+        System.out.println("삭제할 상품의 ID를 입력하세요 : ");
+        Scanner input = new Scanner(System.in);
+        String bookId = input.nextLine();
+
+        if(this.mCart.isCartInBook(bookId)){
+            this.mCart.deleteBookItem(bookId);
+        }else {
+            System.out.println("존재하지 않는 ID입니다");
+        }
     }
 
     public void menuCartBill() {
